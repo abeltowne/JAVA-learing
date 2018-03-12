@@ -1,12 +1,12 @@
-import javax.imageio.ImageIO;
+import javax.imageio.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.*;
 import java.io.IOException;
-
-public final class Main {
+public final class Model {
 
     public static void getData(String path){
         try{
+
             BufferedImage bimg = ImageIO.read(new File(path));
             int [][] data = new int[bimg.getWidth()][bimg.getHeight()];
             //方式一：通过getRGB()方式获得像素矩阵
@@ -35,7 +35,8 @@ public final class Main {
             e.printStackTrace();
         }
     }
-    public static void getTomatoRGB(String path){
+    public static int[] getTomatoRGB(String path){
+        int[] tmp = new int[2];
         try{
             int rTotal=0,gTotal=0,bTotal=0;
             BufferedImage img = ImageIO.read(new File(path));
@@ -52,25 +53,33 @@ public final class Main {
             }
             int Width = img.getWidth();
             int Height = img.getHeight();
-            return ;
-//            System.out.println(rTotal/(Width*Height));
-//            System.out.println(gTotal/(Width*Height));
-//            System.out.println(bTotal/(Width*Height));
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-
-    public static void whichIsRipe(String pathA,String pathB){
-        try{
-            int firstRgb=0 ,secRgb=0;
-            getTomatoRGB(pathA);
+            System.out.println(rTotal/(Width*Height));
+            System.out.println(gTotal/(Width*Height));
+            System.out.println(bTotal/(Width*Height));
+            tmp[0] = rTotal/(Width*Height);
+            tmp[1] = gTotal/(Width*Height);
 
         }catch (IOException e){
             e.printStackTrace();
         }
+        return tmp;
     }
+
+    public static void DisPlaywhichIsMoreRipe(int [] firstRAndG, int [] secRAndG){
+        if(firstRAndG[0]>secRAndG[0] && firstRAndG[1]<secRAndG[1]){
+            System.out.println("第一张图片更熟：");
+        }else if ((firstRAndG[0]-secRAndG[0])>(secRAndG[1]-firstRAndG[1])){
+            System.out.println("第一张图片更熟：");
+        }else {
+            System.out.println("第二张图片更熟：");
+        }
+    }
+
+
+
     public static void main(String [] args){
+        int temFirstMapRAndG[];
+        int temSectMapRAndG[];
         System.out.println("没有熟的西红柿的像素：");
         getData("G:\\greeTomato.jpg");
         System.out.println("已经熟的西红柿的像素：");
@@ -84,7 +93,9 @@ public final class Main {
         getTomatoRGB("G:\\red1.jpg");
         getTomatoRGB("G:\\red2.jpg");
         getTomatoRGB("G:\\red3.jpg");
-        System.out.println("初步断定西红柿的R的值大于150的时候，红色程度较为高，定义为成熟");
-
+        System.out.println("开始判断哪个西红柿更熟一点：");
+        temFirstMapRAndG = getTomatoRGB("G:\\red2.jpg");
+        temSectMapRAndG = getTomatoRGB("G:\\red3.jpg");
+        DisPlaywhichIsMoreRipe(temFirstMapRAndG,temSectMapRAndG);
     }
 }
